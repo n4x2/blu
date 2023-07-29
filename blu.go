@@ -2,6 +2,7 @@
 package blu
 
 const (
+	defaultOptionalTag      = "optional" // Default name for optional tag.
 	defaultJSONTag          = "json"     // Default name for JSON tag.
 	defaultTag              = "validate" // Default name for validation tag.
 	defaultTagNameIndex     = 0          // Index of tag name in a tag string (e.g., "validate:name=param").
