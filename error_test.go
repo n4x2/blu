@@ -28,6 +28,11 @@ func TestErrorMessages(t *testing.T) {
 			err:      &InvalidInputError{reflect.TypeOf(true)},
 			expected: "invalid input of type bool: input is not a struct",
 		},
+		{
+			name:     "error message: ValidationError",
+			err:      &ValidationError{},
+			expected: "validation error: some fields have validation issues",
+		},
 	}
 
 	for i := range testCases {
