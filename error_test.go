@@ -17,6 +17,11 @@ func TestErrorMessages(t *testing.T) {
 			err:      &DuplicatedRuleError{RuleName: "alpha_space"},
 			expected: "duplicated rule: rule alpha_space already exist.",
 		},
+		{
+			name:     "error message: UnexportedFieldError",
+			err:      &UnexportedFieldError{Field: "name"},
+			expected: "unexported field encountered for field: name",
+		},
 	}
 
 	for i := range testCases {
