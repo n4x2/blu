@@ -49,7 +49,10 @@ func TestRegisterRule(t *testing.T) {
 			validator := NewValidator()
 
 			for _, rule := range tc.initialRules {
-				validator.RegisterRule(rule)
+				err := validator.RegisterRule(rule)
+				if err != nil {
+					t.Fatalf("unexpected error while registering rule: %v", err)
+				}
 			}
 
 			err := validator.RegisterRule(tc.newRule)
