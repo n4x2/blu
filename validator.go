@@ -93,3 +93,56 @@ func (v *Validator) Serialize(value reflect.Value) ([]Field, error) {
 
 	return fields, nil
 }
+
+// Validate validates the field value of the given struct based on tags.
+// It return an error if the input is not a struct.
+// If there are validation errors for the struct fields,
+// it return a composite error that contains all the validation errors.
+// It return nil if validation success.
+func (v *Validator) Validate(s interface{}) error {
+	value := reflect.ValueOf(s)
+
+	if value.Kind() != reflect.Struct {
+		return &InvalidInputError{Type: reflect.TypeOf(s)}
+	}
+
+	// Serialize struct.
+	fields, err := v.Serialize(value)
+	if err != nil {
+		return fmt.Errorf("validation error: %w", err)
+	}
+
+	validationErrors := make(ValidationError, 0)
+
+	// Validating fields.
+	for _, field := range fields {
+		for _, tag := range field.Tags {
+			// Skip validation if contain "optional" tag, except value not empty.
+			if tag.Name == defaultOptionalTag {
+				if field.Value == emptyString {
+					break
+				}
+			}
+
+			if field.Value == emptyString {
+				err := &EmptyFieldValueError{FieldName: field.Name}
+				validationErrors[field.Name] = append(validationErrors[field.Name], err.Error())
+			}
+
+			for _, rule := range v.rules {
+				if rule.Name() == tag.Name {
+					err := rule.Validate(field.Name, field.Value, tag.Param)
+					if err != nil {
+						validationErrors[field.Name] = append(validationErrors[field.Name], err.Error())
+					}
+				}
+			}
+		}
+	}
+
+	if len(validationErrors) > 0 {
+		return &validationErrors
+	}
+
+	return nil
+}
