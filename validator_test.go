@@ -1,7 +1,9 @@
 package blu
 
 import (
+	"fmt"
 	"reflect"
+	"strconv"
 	"testing"
 )
 
@@ -14,6 +16,26 @@ func (r *CustomRule) Name() string {
 }
 
 func (r *CustomRule) Validate(field, value, params string) error {
+	return nil
+}
+
+type Min struct {
+	Min string
+}
+
+func (r *Min) Name() string {
+	return "min"
+}
+
+func (r *Min) Validate(field, value, params string) error {
+	v, _ := strconv.Atoi(value)
+
+	p, _ := strconv.Atoi(params)
+
+	if v < p {
+		return fmt.Errorf("minimum value must be %s", params)
+	}
+
 	return nil
 }
 
@@ -212,6 +234,71 @@ func TestSerializeStruct(t *testing.T) {
 
 			if !reflect.DeepEqual(fields, tc.expected) {
 				t.Errorf("unexpected result.\nexpected: %+v\nGot: %+v", tc.expected, fields)
+			}
+		})
+	}
+}
+
+func TestValidate(t *testing.T) {
+	t.Parallel()
+
+	testCases := []struct {
+		name  string
+		input interface{}
+		valid bool
+	}{
+		{
+			name: "validate: with optional tag",
+			input: struct {
+				A int `validate:"min=10"`
+				B int `validate:"optional,min=20"`
+				C int `validate:"optional,min=30"`
+			}{
+				A: 11,
+				B: 20,
+			},
+			valid: true,
+		},
+		{
+			name: "validate: without value",
+			input: struct {
+				A int `validate:"min=10"`
+				B int `validate:"min=20"`
+				C int `validate:"optional,min=30"`
+			}{},
+			valid: false,
+		},
+		{
+			name:  "validate: unexported field",
+			input: struct{ name string }{},
+			valid: false,
+		},
+		{
+			name:  "validate: non-struct",
+			input: true,
+			valid: false,
+		},
+	}
+
+	v := NewValidator()
+	if err := v.RegisterRule(&Min{}); err != nil {
+		t.Log(err)
+	}
+
+	for i := range testCases {
+		tc := testCases[i]
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+
+			err := v.Validate(tc.input)
+			if tc.valid {
+				if err != nil {
+					t.Errorf("Expected no error for valid input, but got: %v", err)
+				}
+			} else {
+				if err == nil {
+					t.Errorf("Expected error for invalid input, but got no error")
+				}
 			}
 		})
 	}
