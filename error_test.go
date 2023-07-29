@@ -33,6 +33,11 @@ func TestErrorMessages(t *testing.T) {
 			err:      &ValidationError{},
 			expected: "validation error: some fields have validation issues",
 		},
+		{
+			name:     "error message: EmptyFieldValueError",
+			err:      &EmptyFieldValueError{FieldName: "full_name"},
+			expected: "this field full_name can't empty",
+		},
 	}
 
 	for i := range testCases {
