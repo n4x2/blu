@@ -1,6 +1,7 @@
 package blu
 
 import (
+	"reflect"
 	"testing"
 )
 
@@ -21,6 +22,11 @@ func TestErrorMessages(t *testing.T) {
 			name:     "error message: UnexportedFieldError",
 			err:      &UnexportedFieldError{Field: "name"},
 			expected: "unexported field encountered for field: name",
+		},
+		{
+			name:     "error message: InvalidInputError",
+			err:      &InvalidInputError{reflect.TypeOf(true)},
+			expected: "invalid input of type bool: input is not a struct",
 		},
 	}
 
