@@ -124,11 +124,6 @@ func (v *Validator) Validate(s interface{}) error {
 				}
 			}
 
-			if field.Value == emptyString {
-				err := &EmptyFieldValueError{FieldName: field.Name}
-				validationErrors[field.Name] = append(validationErrors[field.Name], err.Error())
-			}
-
 			for _, rule := range v.rules {
 				if rule.Name() == tag.Name {
 					err := rule.Validate(field.Name, field.Value, tag.Param)
