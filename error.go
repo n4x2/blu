@@ -11,11 +11,6 @@ type (
 		RuleName string
 	}
 
-	// EmptyFieldValueError an error type idicating an issue with field value.
-	EmptyFieldValueError struct {
-		FieldName string
-	}
-
 	// InvalidaInputError an error type indicating an issue with input validation.
 	InvalidInputError struct {
 		Type reflect.Type
@@ -33,11 +28,6 @@ type (
 // Error returns an error message indicating that a rule with the same name already exists.
 func (e *DuplicatedRuleError) Error() string {
 	return "duplicated rule: rule " + e.RuleName + " already exist."
-}
-
-// Error returns for empty value.
-func (e *EmptyFieldValueError) Error() string {
-	return "this field " + e.FieldName + " can't empty"
 }
 
 // Error return for invalid input (non-struct).
