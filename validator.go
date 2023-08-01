@@ -1,6 +1,7 @@
 package blu
 
 import (
+	"errors"
 	"fmt"
 	"reflect"
 	"strings"
@@ -97,7 +98,7 @@ func (v *Validator) Serialize(value reflect.Value) ([]Field, error) {
 // Validate validates the field value of the given struct based on tags.
 // It return an error if the input is not a struct.
 // If there are validation errors for the struct fields,
-// it return a composite error that contains all the validation errors.
+// it return a joined error that contains all the validation errors.
 // It return nil if validation success.
 func (v *Validator) Validate(s interface{}) error {
 	value := reflect.ValueOf(s)
@@ -112,7 +113,7 @@ func (v *Validator) Validate(s interface{}) error {
 		return fmt.Errorf("validation error: %w", err)
 	}
 
-	validationErrors := make(ValidationError, 0)
+	var validationErrors error
 
 	// Validating fields.
 	for _, field := range fields {
@@ -128,16 +129,12 @@ func (v *Validator) Validate(s interface{}) error {
 				if rule.Name() == tag.Name {
 					err := rule.Validate(field.Name, field.Value, tag.Param)
 					if err != nil {
-						validationErrors[field.Name] = append(validationErrors[field.Name], err.Error())
+						validationErrors = errors.Join(validationErrors, err)
 					}
 				}
 			}
 		}
 	}
 
-	if len(validationErrors) > 0 {
-		return &validationErrors
-	}
-
-	return nil
+	return validationErrors
 }
