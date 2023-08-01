@@ -20,9 +20,6 @@ type (
 	UnexportedFieldError struct {
 		Field string
 	}
-
-	// ValidationError storing validation errors for fields as key-value pairs.
-	ValidationError map[string][]string
 )
 
 // Error returns an error message indicating that a rule with the same name already exists.
@@ -38,9 +35,4 @@ func (e *InvalidInputError) Error() string {
 // Error returns an error message indicating unexported field (lowercase).
 func (e *UnexportedFieldError) Error() string {
 	return "unexported field encountered for field: " + e.Field
-}
-
-// Error returns a error message indicating that there are validation issues.
-func (e *ValidationError) Error() string {
-	return "validation error: some fields have validation issues"
 }
