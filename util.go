@@ -7,11 +7,7 @@ import "reflect"
 func isValidInput(s interface{}) bool {
 	v := reflect.ValueOf(s)
 
-	if v.Kind() != reflect.Struct {
-		return false
-	}
-
-	return true
+	return v.Kind() == reflect.Struct
 }
 
 // isExportableStruct checks if the provided struct is exportable (all fields are exported).

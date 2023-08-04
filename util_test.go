@@ -38,7 +38,9 @@ func TestExportableStruct(t *testing.T) {
 }
 
 func TestUnexportableStruct(t *testing.T) {
-	var s Unexportable
+	s := Unexportable{
+		name: "John Doe",
+	}
 
 	ok, _ := isExportableStruct(s)
 	if ok {
