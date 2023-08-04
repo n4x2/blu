@@ -6,33 +6,33 @@ import (
 )
 
 type (
-	// DuplicatedRuleError an error type for attempting register new rule.
-	DuplicatedRuleError struct {
+	// ErrorDuplicatedRule an error type for attempting register new rule.
+	ErrorDuplicatedRule struct {
 		RuleName string
 	}
 
 	// InvalidaInputError an error type indicating an issue with input validation.
-	InvalidInputError struct {
+	ErrorInvalidInput struct {
 		Type reflect.Type
 	}
 
-	// UnexportedFieldError an error type for attempting to validate an unexported field.
-	UnexportedFieldError struct {
+	// ErrorUnexportedField an error type for attempting to validate an unexported field.
+	ErrorUnexportedField struct {
 		Field string
 	}
 )
 
 // Error returns an error message indicating that a rule with the same name already exists.
-func (e *DuplicatedRuleError) Error() string {
-	return "duplicated rule: rule " + e.RuleName + " already exist."
+func (e *ErrorDuplicatedRule) Error() string {
+	return "error: duplicated rule " + e.RuleName + ". the rule already exists."
 }
 
 // Error return for invalid input (non-struct).
-func (e *InvalidInputError) Error() string {
-	return fmt.Sprintf("invalid input of type %s: input is not a struct", e.Type)
+func (e *ErrorInvalidInput) Error() string {
+	return fmt.Sprintf("error: invalid input of type %s. input is not a struct.", e.Type)
 }
 
 // Error returns an error message indicating unexported field (lowercase).
-func (e *UnexportedFieldError) Error() string {
-	return "unexported field encountered for field: " + e.Field
+func (e *ErrorUnexportedField) Error() string {
+	return "error: unexported field " + e.Field + " encountered."
 }
