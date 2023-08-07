@@ -34,7 +34,7 @@ if err != nil {
 }
 ```
 ## Custom Rule
-You can add custom validation rules by implementing the `Rule` interface and registering them with the validator. This allows you to extend the validation capabilities as per your specific requirements.
+Create custom rule by implementing the `Rule` interface:
 ```go
 type CustomRule struct {}
 
@@ -56,21 +56,10 @@ if err != nil {
     // Handle error (e.g., duplicated rule name).
 }
 ```
-Use the "custom" rule in your struct's validation tags:
+Use the "custom" rule in struct validation tags:
 ```go
 type MyStruct struct {
     FieldA string `validate:"custom"`
     // ...
 }
 ```
-## Supported Rules
-- `alpha_dash`: Validates that the field contains only alpha-numeric characters, underscores, and dashes.
-- `alpha_num`: Validates that the field contains only alpha-numeric characters.
-- `alpha_space`: Validates that the field contains only alpha-numeric characters and spaces.
-- `alpha`: Validates that the field contains only alphabetic characters.
-- `enum`: Validates that the field's value is within a predefined set of allowed values.
-- `max`: Validates that the numeric field's value is less than or equal to a specified maximum value.
-- `min`: Validates that the numeric field's value is greater than or equal to a specified minimum value.
-- `number`: Validates that the field contains a valid number.
-- `numeric`: Validates that the field contains only numeric characters.
-- `required`: Validates that the field is present and not empty.
